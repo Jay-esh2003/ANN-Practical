@@ -39,3 +39,44 @@ plt.title("Softmax")
 
 plt.tight_layout()
 plt.show()
+
+-------
+
+import networkx as nx
+import matplotlib.pyplot as plt
+
+# Create a directed graph
+graph = nx.DiGraph()
+
+# Add input layer nodes
+graph.add_node('Input 1', layer='input')
+graph.add_node('Input 2', layer='input')
+
+# Add output layer node
+graph.add_node('Output 1', layer='output')
+
+# Add edges with example weights connecting inputs to output
+graph.add_edge('Input 1', 'Output 1', weight=0.5)
+graph.add_edge('Input 2', 'Output 1', weight=0.8)
+
+# Define positions for each node
+pos = {
+    'Input 1': (0, 0.5),
+    'Input 2': (0, -0.5),
+    'Output 1': (1, 0)
+}
+
+# Draw the graph
+plt.figure(figsize=(6, 4))
+nx.draw(graph, pos, with_labels=True, node_size=1000, node_color='skyblue', font_size=10, font_weight='bold', arrows=True)
+
+# Draw edge labels (weights)
+edge_labels = nx.get_edge_attributes(graph, 'weight')
+nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
+
+plt.title("Simple 2-Layer Neural Network")
+plt.axis('off')  # Hide axes
+plt.show()
+
+# Print edge weights (optional)
+print("Edge Weights:", edge_labels)
