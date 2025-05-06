@@ -1,0 +1,75 @@
+# Import necessary libraries
+import tensorflow as tf
+from tensorflow.keras import datasets, layers, models
+import matplotlib.pyplot as plt
+import numpy as np
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.metrics import classification_report, confusion_matrix
+
+# Load CIFAR-10 dataset
+(X_train, y_train), (X_test, y_test) = datasets.cifar10.load_data()
+
+# Print dataset shapes
+print("Training Data Shape:", X_train.shape)
+print("Test Data Shape:", X_test.shape)
+
+# Flatten label arrays
+y_train = y_train.reshape(-1,)
+y_test = y_test.reshape(-1,)
+
+# Define class names
+classes = ["airplane", "automobile", "bird", "cat", "deer", 
+           "dog", "frog", "horse", "ship", "truck"]
+
+# Function to plot a sample image
+def plot_sample(X, y, index):
+    plt.figure(figsize=(2,2))
+    plt.imshow(X[index])
+    plt.xlabel(classes[y[index]])
+    plt.show()
+
+# Show some samples
+plot_sample(X_train, y_train, 0)
+plot_sample(X_train, y_train, 1)
+
+# Resize images to a smaller size (16x16) to reduce memory load
+X_train = tf.image.resize(X_train, (16, 16))
+X_test = tf.image.resize(X_test, (16, 16))
+
+# Normalize the pixel values to 0-1 and cast to float32
+X_train = tf.cast(X_train, tf.float32) / 255.0
+X_test = tf.cast(X_test, tf.float32) / 255.0
+
+# Create a data generator to load data in batches
+datagen = ImageDataGenerator(rescale=1./255)
+
+# Generate data batches for training and testing
+train_generator = datagen.flow(X_train, y_train, batch_size=32)
+test_generator = datagen.flow(X_test, y_test, batch_size=32)
+
+# Build the ANN model
+ann = models.Sequential([
+    layers.Flatten(input_shape=(16, 16, 3)),    # Flatten input
+    layers.Dense(100, activation='relu'),       # Hidden layer 1
+    layers.Dense(100, activation='relu'),       # Hidden layer 2
+    layers.Dense(10, activation='softmax')      # Output layer (10 classes)
+])
+
+# Display model summary
+ann.summary()
+
+# Compile the model
+ann.compile(optimizer='SGD',
+            loss='sparse_categorical_crossentropy',
+            metrics=['accuracy'])
+
+# Train the model using the generator
+ann.fit(train_generator, epochs=5)
+
+# Predict on test data
+y_pred_probs = ann.predict(test_generator, verbose=1)
+y_pred = np.argmax(y_pred_probs, axis=1)
+
+# Classification report
+print("Classification Report:\n")
+print(classification_report(y_test, y_pred, target_names=classes))
