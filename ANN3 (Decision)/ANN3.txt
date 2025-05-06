@@ -1,0 +1,63 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class perceptron:
+
+    def __init__(self,learning_rate = 0.1, number_of_epochs= 100):
+        self.learning_rate = learning_rate
+        self.number_of_epochs = number_of_epochs
+        self.weights= None
+        self.bias= None
+
+    def activation_function(self,value):
+        return np.where(value > 0 ,1,0)
+
+    def train(self, input_data ,labels):
+        num_samples , num_features = input_data.shape
+        self.weights = np.zeros(num_features)
+        self.bias = 0.05
+
+        binary_labels = np.array([1 if i >0 else 0 for i in labels])  #if error make i = label
+
+        for epoch in range(self.number_of_epochs):
+            for sample_index , current_input in enumerate(input_data):
+                weighted_sum = np.dot(current_input,self.weights) + self.bias
+                prediction = self.activation_function(weighted_sum)
+                true_label = binary_labels[sample_index]
+                error = true_label - prediction
+                weight_update = self.learning_rate * error
+
+                self.weights = self.weights + (weight_update * current_input)
+                self.bias = self.bias + weight_update
+
+    def predict(self,inputs):
+        weighted_sum = np.dot(self.weights , inputs) +self.bias
+        predictions = self.activation_function(weighted_sum)
+        return predictions
+    
+X = np.array([
+              [0,0],
+              [0,1],
+              [1,0],
+              [1,1]
+            ])
+
+y = np.array([0,0,0,1])
+
+model = perceptron(learning_rate=0.1,number_of_epochs=100)
+model.train(X,y)
+
+plt.figure(figsize=(6,4))
+plt.scatter(X[:,0], X[:,1],c=y, cmap='viridis',s=100)
+x_values = np.linspace(-0.5 ,1.5,100)
+y_values = -(model.weights[0]*x_values + model.bias) /model.weights[1]
+plt.plot(x_values,y_values,color='red',label="decision boundary")
+
+plt.xlim(-0.5,1.5)
+plt.ylim(-0.5,1.5)
+plt.xlabel("input x1")
+plt.ylabel("input x2")
+plt.title("perceptron ANDNOT logic")
+plt.legend()
+plt.grid(True)
+plt.show()

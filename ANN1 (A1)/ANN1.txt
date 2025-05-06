@@ -1,0 +1,41 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Activation functions
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def tanh(x):
+    return np.tanh(x)
+
+def relu(x):
+    return np.maximum(0, x)
+
+def softmax(x):
+    e_x = np.exp(x - np.max(x))
+    return e_x / e_x.sum()
+
+# Input range
+x = np.linspace(-10, 10, 100)
+
+# Plotting
+plt.figure(figsize=(10, 8))
+
+plt.subplot(2, 2, 1)
+plt.plot(x, sigmoid(x))
+plt.title("Sigmoid")
+
+plt.subplot(2, 2, 2)
+plt.plot(x, tanh(x))
+plt.title("Tanh")
+
+plt.subplot(2, 2, 3)
+plt.plot(x, relu(x))
+plt.title("ReLU")
+
+plt.subplot(2, 2, 4)
+plt.plot(x, softmax(x))
+plt.title("Softmax")
+
+plt.tight_layout()
+plt.show()

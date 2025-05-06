@@ -1,0 +1,60 @@
+# Import necessary libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.utils import to_categorical
+
+# Load the MNIST dataset
+(x_train, y_train), (x_valid, y_valid) = mnist.load_data()
+
+# Inspect shapes and data types
+print("Training data shape:", x_train.shape)  # (60000, 28, 28)
+print("Validation data shape:", x_valid.shape)  # (10000, 28, 28)
+print("Data type:", x_train.dtype)  # uint8
+print("Min pixel value:", x_train.min())  # 0
+print("Max pixel value:", x_train.max())  # 255
+
+# Display the first image
+image = x_train[0]
+plt.imshow(image, cmap='gray')
+plt.title(f"Label: {y_train[0]}")
+plt.show()
+
+# Reshape the data to 1D vectors
+x_train = x_train.reshape(60000, 784)
+x_valid = x_valid.reshape(10000, 784)
+
+# Normalize pixel values to [0, 1]
+x_train = x_train / 255.0
+x_valid = x_valid / 255.0
+
+# Convert labels to one-hot encoded vectors
+num_categories = 10
+y_train = to_categorical(y_train, num_categories)
+y_valid = to_categorical(y_valid, num_categories)
+
+# Build the model
+model = Sequential()
+model.add(Dense(units=512, activation='relu', input_shape=(784,)))
+model.add(Dense(units=512, activation='relu'))
+model.add(Dense(units=10, activation='softmax'))
+
+# Model summary
+model.summary()
+
+# Compile the model
+model.compile(
+    loss='categorical_crossentropy',
+    optimizer='adam',
+    metrics=['accuracy']
+)
+
+# Train the model
+history = model.fit(
+    x_train, y_train,
+    epochs=10,
+    validation_data=(x_valid, y_valid),
+    verbose=1
+)

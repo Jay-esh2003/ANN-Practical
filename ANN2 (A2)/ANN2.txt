@@ -1,0 +1,20 @@
+import numpy as np
+def andnot_neuron(x1, x2):
+ # Weights for the inputs
+  w1 = 1
+  w2 = -1
+  # Bias (threshold)
+  threshold = -0.5
+  # Weighted sum of inputs
+  weighted_sum = (w1 * x1) + (w2 * x2) + threshold
+  # Activation function (step function)
+  if weighted_sum >= 0:
+    return 1
+  else:
+    return 0
+      
+ # Test cases
+print(f"ANDNOT(0, 0) = {andnot_neuron(0, 0)}")  
+print(f"ANDNOT(0, 1) = {andnot_neuron(0, 1)}")  
+print(f"ANDNOT(1, 0) = {andnot_neuron(1, 0)}")  
+print(f"ANDNOT(1, 1) = {andnot_neuron(1, 1)}")  
