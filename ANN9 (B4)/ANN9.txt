@@ -1,64 +1,54 @@
-import numpy as np
+import numpy as np 
 
-# Define input vectors
-x1 = np.array([[1, 1, 1, 1]])
-x2 = np.array([[1, -1, -1, 1]])
-x3 = np.array([[-1, 1, -1, -1]])
-x4 = np.array([[1, -1, -1, -1]])
+x1 =[[1,1,1,1]]
+x2 =[[1,-1,-1,1]]
+x3 =[[-1,1,-1,-1]]
+x4 =[[1,-1,-1,-1]]
 
-# Transpose and calculate weight matrices
-x11 = np.transpose(x1, axes=None)
+x11 = np.transpose(x1,axes=None)
 print(x11)
-w1 = x1 * x11
+w1 = x1* x11
 print(w1)
 
-x21 = np.transpose(x2, axes=None)
-print(x21)
-w2 = x2 * x21
+x22 = np.transpose(x2,axes=None)
+print(x22)
+w2 = x2* x22
 print(w2)
 
-x31 = np.transpose(x3, axes=None)
-print(x31)
-w3 = x3 * x31
+x33 = np.transpose(x3,axes=None)
+print(x33)
+w3 = x3* x33
 print(w3)
 
-x41 = np.transpose(x4, axes=None)
-print(x41)
-w4 = x4 * x41
+x44 = np.transpose(x4,axes=None)
+print(x44)
+w4 = x4* x44
 print(w4)
 
-# Sum the weight matrices
-W = w1 + w2 + w3 + w4
-print(W)
+w = w1+w2+w3+w4
+print (w)
 
-# Testing with x1 and W
-xt1 = np.dot(x1, W)
-print(xt1)
+xt1 = np.dot(x1,w)
+print (f"xt1={xt1}")
 
-# Function to make diagonal zero
 def make_diagonal_zero(matrix):
-    for i in range(min(len(matrix), len(matrix[0]))):
-        matrix[i][i] = 0
+    for i in range(len(matrix)):
+        matrix[i][i]=0
     return matrix
 
-# Apply diagonal zero function
-W_rev = make_diagonal_zero(W)
-print(W_rev)
+w_rev = make_diagonal_zero(w)
+print (w_rev)
 
-# Test the Hopfield network
-xt1 = np.dot(x1, W_rev)
-print(xt1)
+xt1 = np.dot(x1,w_rev)
+print (xt1)
 
-# Activation function
-def activate(x, theta=0):
-    return np.where(x > theta, 1, np.where(x == theta, x, 0))
+def activate(x):
+    return np.where(x>=0,1,-1)
 
-# Apply activation function
-xt1_act = activate(xt1)
+xt1_act =activate(xt1)
 print(xt1_act)
 
-# Testing if the output matches the original vector
-if np.array_equal(x1, xt1_act):
-    print("Testing complete")
+if np.array_equal(x1,xt1_act):
+    print ("testing complte")
 else:
-    print("Testing failed")
+    print("testing failed")
